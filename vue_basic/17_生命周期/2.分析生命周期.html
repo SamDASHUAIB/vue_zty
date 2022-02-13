@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>分析生命周期</title>
+    <!-- 引入Vue -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+  </head>
+  <body>
+    <!-- 准备好一个容器-->
+    <div id="root" :x="n">
+      <h2 v-text="n"></h2>
+      <h2>当前的n值是：{{n}}</h2>
+      <button @click="add">点我n+1</button>
+      <button @click="bye">点我销毁vm</button>
+    </div>
+  </body>
+
+  <!--
+    挂载流程
+      数据监测 （数据劫持） 数据代理 =》 created （可以拿到 data 中定义的数据和调用 methods 定义的方法了）
+      虚拟 DOM 转为真实 DOM （$el 中存了一份真实 DOM => 复用）插入到页面中 =》mounted （各种初始化操作，开启定时器，发送网络请求，订阅消息，绑定自定义事件）DOM 操作有效(但是尽可能避免 DOM 操作)
+    更新流程 => 新旧虚拟 DOM 树 diff 比较 => 更新页面
+      数据是新的, 页面是旧的, 页面和数据没有保持同步 => beforeUpdate
+      数据是新的, 页面也是新的, 页面和数据保持同步 => updated
+    销毁流程
+      vm 中所有的 data methods 指令等等, 都处于可用状态, 马上要执行销毁过程 => beforeDestroy
+      关闭定时器, 取消订阅消息, 解绑自定义事件等收尾操作
+   -->
+  <script type="text/javascript">
+    Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示。
+
+    new Vue({
+      el: '#root',
+      // template 整个替换掉 #root
+      // template:`
+      // 	<div>
+      // 		<h2>当前的n值是：{{n}}</h2>
+      // 		<button @click="add">点我n+1</button>
+      // 	</div>
+      // `,
+      data: {
+        n: 1,
+      },
+      methods: {
+        add() {
+          console.log('add')
+          this.n++
+        },
+        bye() {
+          console.log('bye')
+          this.$destroy()
+        },
+      },
+      watch: {
+        n() {
+          console.log('n变了')
+        },
+      },
+      beforeCreate() {
+        console.log('beforeCreate')
+      },
+      created() {
+        console.log('created')
+      },
+      beforeMount() {
+        console.log('beforeMount')
+      },
+      mounted() {
+        console.log('mounted')
+        console.log(this.$el) // 真实 DOM
+      },
+      beforeUpdate() {
+        console.log('beforeUpdate')
+      },
+      updated() {
+        console.log('updated')
+      },
+      beforeDestroy() {
+        console.log('beforeDestroy')
+      },
+      destroyed() {
+        console.log('destroyed')
+      },
+    })
+  </script>
+</html>

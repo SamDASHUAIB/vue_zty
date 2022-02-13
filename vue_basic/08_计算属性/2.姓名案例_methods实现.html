@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>姓名案例_methods实现</title>
+    <!-- 引入Vue -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+  </head>
+  <body>
+    <!-- 准备好一个容器-->
+    <div id="root">
+      姓：
+      <input type="text" v-model="firstName" />
+      <br />
+      <br />
+      名：
+      <input type="text" v-model="lastName" />
+      <br />
+      <br />
+      全名：
+      <!--
+        函数是一个表达式, 我们要的是函数执行后, 返回的值,
+        所以要加 括号, 不能像 事件绑定一样不加括号
+      -->
+      <span>{{fullName()}}</span>
+    </div>
+  </body>
+  <script type="text/javascript">
+    Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示。
+    /*
+      data 中的数据发生变化，Vue 中的模板会重新解析一遍，methods 中的方法，
+      如果在模板中通过插值语法执行了的话，就会重新执行一次。
+    */
+    new Vue({
+      el: '#root',
+      data: {
+        firstName: '张',
+        lastName: '三',
+      },
+      methods: {
+        fullName() {
+          return this.firstName.slice(0, 3) + '-' + this.lastName
+        },
+      },
+    })
+  </script>
+</html>

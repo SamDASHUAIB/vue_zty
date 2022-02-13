@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>姓名案例_watch实现</title>
+    <!-- 引入Vue -->
+    <script type="text/javascript" src="../js/vue.js"></script>
+  </head>
+  <body>
+    <!--
+				computed和watch之间的区别：
+						1.computed能完成的功能，watch都可以完成。
+						2.watch能完成的功能，computed不一定能完成，例如：watch可以进行异步操作。
+            computed 靠的是返回值，watch 不靠返回值，而是我们自己用命令式的方式亲自编写详细的实现
+				两个重要的小原则：目标只有一个，就是让 this 指向 vm
+							1.所有直接被Vue管理的函数，最好写成普通函数，这样this的指向才是vm 或 组件实例对象。
+							2.所有不被Vue所管理的函数（定时器的回调函数、ajax的回调函数等、Promise的回调函数），最好写成箭头函数，
+								这样this的指向才是vm 或 组件实例对象。(多层嵌套)
+		-->
+    <!-- 准备好一个容器-->
+    <div id="root">
+      姓：
+      <input type="text" v-model="firstName" />
+      <br />
+      <br />
+      名：
+      <input type="text" v-model="lastName" />
+      <br />
+      <br />
+      全名：
+      <span>{{fullName}}</span>
+      <br />
+      <br />
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示。
+
+    const vm = new Vue({
+      el: '#root',
+      data: {
+        firstName: '张',
+        lastName: '三',
+        fullName: '张-三',
+      },
+      // 计算属性可以进行更加复杂的操作，例如：异步任务。
+      // watch: {
+      //   firstName(val) {
+      //     setTimeout(() => {
+      //       console.log(this)
+      //       this.fullName = val + '-' + this.lastName
+      //     }, 1000)
+      //   },
+      //   lastName(val) {
+      //     this.fullName = this.firstName + '-' + val
+      //   },
+      // },
+      // watch: {
+      //   firstName(val) {
+      //     this.fullName = val + '-' + this.lastName
+      //   },
+      //   lastName(val) {
+      //     this.fullName = this.firstName + '-' + val
+      //   }
+      // },
+      watch: {
+        firstName: {
+          handler(Val) {
+            this.fullName = Val + '-' + this.lastName
+          },
+        },
+        lastName: {
+          immediate: true,
+          deep: true,
+          handler(Val) {
+            this.fullName = this.firstName + '-' + Val
+          },
+        },
+      },
+    })
+    vm.$watch('firstName', function (val) {
+      this.fullName = val + '-' + this.lastName
+    })
+  </script>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>何为数据代理</title>
+  </head>
+  <body>
+    <!-- 数据代理: 通过一个对象代理对另一个对象中属性的操作(读/写) -->
+    <script type="text/javascript">
+      let obj = { x: 100 }
+      let obj2 = { y: 200 }
+
+      // 经过 obj2 现在可以修改 obj 中的 属性 x 了
+      Object.defineProperty(obj2, 'x', {
+        get() {
+          return obj.x
+        },
+        set(value) {
+          console.log('obj2 代理了 obj1 针对 x 的修改')
+          obj.x = value
+        },
+      })
+      obj2.x = 2
+      console.log(obj)
+      console.log(obj2)
+    </script>
+  </body>
+</html>
